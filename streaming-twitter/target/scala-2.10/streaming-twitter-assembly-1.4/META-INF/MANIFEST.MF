@@ -1,0 +1,9 @@
+Manifest-Version: 1.0
+Implementation-Vendor: default
+Implementation-Title: streaming-twitter
+Implementation-Version: 1.4
+Implementation-Vendor-Id: default
+Specification-Vendor: default
+Specification-Title: streaming-twitter
+Specification-Version: 1.4
+
