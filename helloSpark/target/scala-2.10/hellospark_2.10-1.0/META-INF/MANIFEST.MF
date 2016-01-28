@@ -1,0 +1,10 @@
+Manifest-Version: 1.0
+Implementation-Vendor: default
+Implementation-Title: helloSpark
+Implementation-Version: 1.0
+Implementation-Vendor-Id: default
+Specification-Vendor: default
+Specification-Title: helloSpark
+Specification-Version: 1.0
+Main-Class: com.ibm.cds.spark.samples.HelloSpark
+
