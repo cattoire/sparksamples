@@ -18,9 +18,9 @@ import org.apache.spark.broadcast.Broadcast
  */
 
 object ToneAnalyzer {
-  
+
   val logger = Logger.getLogger( "com.ibm.cds.spark.samples.ToneAnalyzer" )
-  
+
   val sentimentFactors = Array(
       ("Anger","anger"),
       ("Disgust","disgust"),
@@ -36,7 +36,7 @@ object ToneAnalyzer {
       ("Agreeableness","agreeableness_big5"),
       ("EmotionalRange","neuroticism_big5")
   )
-  
+
   //Class models for Sentiment JSON
   case class DocumentTone( document_tone: Sentiment )
   case class Sentiment(tone_categories: Seq[ToneCategory]);
@@ -46,21 +46,24 @@ object ToneAnalyzer {
 //  case class Tone( name: String, id: String, children: Seq[ToneResult])
 //  case class ToneResult(name: String, id: String, word_count: Double, normalized_score: Double, raw_score: Double, linguistic_evidence: Seq[LinguisticEvidence] )
 //  case class LinguisticEvidence( evidence_score: Double, word_count: Double, correlation: String, words : Seq[String])
-  
+
   case class Geo( lat: Double, long: Double )
   case class Tweet(author: String, date: String, language: String, text: String, geo : Geo, sentiment : Sentiment )
- 
+
   def computeSentiment( client: Client, status:StatusAdapter, broadcastVar: Broadcast[Map[String,String]] ) : Sentiment = {
     logger.trace("Calling sentiment from Watson Tone Analyzer: " + status.text)
+    println("Calling sentiment from Watson Tone Analyzer: " + status.text)
     //Get Sentiment on the tweet
-    val sentimentResults: String = 
-      EntityEncoder[String].toEntity("{\"text\": \"" + StringEscapeUtils.escapeJson( status.text ) + "\"}" ).flatMap { 
+    val sentimentResults: String =
+      EntityEncoder[String].toEntity("{\"text\": \"" + StringEscapeUtils.escapeJson( status.text ) + "\"}" ).flatMap {
         entity =>
           val s = broadcastVar.value.get("watson.tone.url").get + "/v3/tone?version=" + broadcastVar.value.get("watson.api.version").get
+          println("s value"+s)
           val toneuri: Uri = Uri.fromString( s ).getOrElse( null )
+          println("tone uri"+toneuri)
           client(
-              Request( 
-                  method = Method.POST, 
+              Request(
+                  method = Method.POST,
                   uri = toneuri,
                   headers = Headers(
                       Authorization(
