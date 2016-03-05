@@ -88,7 +88,7 @@ object StreamingTwitter extends Logging{
       return;
     }
 
-    Logger.getLogger("org.apache.spark").setLevel(Level.OFF)
+    Logger.getLogger("org.apache.spark").setLevel(Level.ALL)
 
     workingRDD = sc.emptyRDD
     //Broadcast the config to each worker node
@@ -130,7 +130,7 @@ object StreamingTwitter extends Logging{
           u => Option(u.getLang)
         }.getOrElse("").startsWith("en") && CharMatcher.ASCII.matchesAllOf(status.getText) && ( keys.isEmpty || keys.exists{status.getText.contains(_)})
       }
-      println("tweets" + tweets)
+      println("tweets " + tweets)
       lazy val client = PooledHttp1Client()
       val rowTweets = tweets.map(status=> {
         val sentiment = ToneAnalyzer.computeSentiment( client, status, broadcastVar )
@@ -144,12 +144,12 @@ object StreamingTwitter extends Logging{
           Option(status.getGeoLocation).map{_.getLongitude}.getOrElse(0.0)    //long
           //exception
         )
-
         var scoreMap : Map[String, Double] = Map()
         if ( sentiment != null ){
           for( toneCategory <- Option(sentiment.tone_categories).getOrElse( Seq() )){
             for ( tone <- Option( toneCategory.tones ).getOrElse( Seq() ) ){
               scoreMap.put( tone.tone_id, tone.score )
+              println("id " + tone.tone_id + "score" + tone.score)
             }
           }
         }
@@ -196,6 +196,7 @@ object StreamingTwitter extends Logging{
 
     }catch{
       case e : Exception => logError(e.getMessage, e )
+      println("error " + e.getMessage)
       return
     }
     ssc.start()
@@ -258,7 +259,10 @@ object StreamingTwitter extends Logging{
 
       (sqlContext, df)
     }catch{
-      case e: Exception => {logError(e.getMessage, e ); return null}
+      case e: Exception => {logError(e.getMessage, e );
+      println("error " + e.getMessage)
+      return null}
+
     }
   }
 
