@@ -152,7 +152,7 @@ object StreamingTwitter extends Logging{
               println("id " + tone.tone_id + "score" + tone.score)
             }
           }
-        }
+        } else println("sentiment is null")
 
         colValues = colValues ++ ToneAnalyzer.sentimentFactors.map { f => (BigDecimal(scoreMap.get(f._2).getOrElse(0.0)).setScale(2, BigDecimal.RoundingMode.HALF_UP).toDouble) * 100.0  }
         //Return [Row, (sentiment, status)]
@@ -272,7 +272,7 @@ object StreamingTwitter extends Logging{
       return;
     }
 
-    println("Stopping Twitter stream. Please wait this may take a while")
+    println("Stopping Twitter stream gracefully. Please wait this may take a while")
     ssc.stop(stopSparkContext = false, stopGracefully = true)
     ssc = null
     println("Twitter stream stopped");
