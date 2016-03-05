@@ -133,7 +133,8 @@ object StreamingTwitter extends Logging{
       println("tweets " + tweets)
       lazy val client = PooledHttp1Client()
       val rowTweets = tweets.map(status=> {
-        val sentiment = ToneAnalyzer.computeSentiment( client, status, broadcastVar )
+        //val sentiment = ToneAnalyzer.computeSentiment( client, status, broadcastVar )
+        val sentiment = null
 
         var colValues = Array[Any](
           status.getUser.getName, //author
@@ -146,15 +147,15 @@ object StreamingTwitter extends Logging{
         )
         var scoreMap : Map[String, Double] = Map()
         if ( sentiment != null ){
-          for( toneCategory <- Option(sentiment.tone_categories).getOrElse( Seq() )){
-            for ( tone <- Option( toneCategory.tones ).getOrElse( Seq() ) ){
-              scoreMap.put( tone.tone_id, tone.score )
-              println("id " + tone.tone_id + "score" + tone.score)
-            }
-          }
+          //for( toneCategory <- Option(sentiment.tone_categories).getOrElse( Seq() )){
+          //  for ( tone <- Option( toneCategory.tones ).getOrElse( Seq() ) ){
+          //    scoreMap.put( tone.tone_id, tone.score )
+          //    println("id " + tone.tone_id + "score" + tone.score)
+          //  }
+          //}
         } else println("sentiment is null")
 
-        colValues = colValues ++ ToneAnalyzer.sentimentFactors.map { f => (BigDecimal(scoreMap.get(f._2).getOrElse(0.0)).setScale(2, BigDecimal.RoundingMode.HALF_UP).toDouble) * 100.0  }
+        //colValues = colValues ++ ToneAnalyzer.sentimentFactors.map { f => (BigDecimal(scoreMap.get(f._2).getOrElse(0.0)).setScale(2, BigDecimal.RoundingMode.HALF_UP).toDouble) * 100.0  }
         //Return [Row, (sentiment, status)]
         (Row(colValues.toArray:_*),(sentiment, status))
       })
