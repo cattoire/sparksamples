@@ -96,7 +96,7 @@ object StreamingTwitter extends Logging{
 
     ssc = new StreamingContext( sc, Seconds(5) )
 
-    ssc.addStreamingListener( new StreamingListener )
+    //ssc.addStreamingListener( new StreamingListener )
 
     try{
       sqlContext = new SQLContext(sc)
