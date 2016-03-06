@@ -274,7 +274,7 @@ object StreamingTwitter extends Logging{
     }
 
     println("Stopping Twitter stream gracefully. Please wait this may take a while")
-    ssc.stop(stopSparkContext = false, stopGracefully = true)
+    ssc.stop(stopSparkContext = false, stopGracefully = false)
     ssc = null
     println("Twitter stream stopped");
 
